@@ -67,8 +67,8 @@ public class BlogServiceTest {
 	@DisplayName("블로그 생성 성공")
 	@Test
 	public void create() {
-		when(blogRepository.save(blog)).thenReturn(blogId);
-		assertEquals(blogId, blogService.create(blog));
+		when(blogRepository.save(blog)).thenReturn(blog);
+		assertEquals(blog, blogService.create(blog));
 		verify(blogRepository, times(1)).save(blog);
 	}
 
@@ -94,10 +94,10 @@ public class BlogServiceTest {
 	@DisplayName("블로그 업데이트 성공")
 	@Test
 	public void update() {
-		when(blogRepository.update(blogId, updateBlog)).thenReturn(blogId);
+		when(blogRepository.update(blogId, updateBlog)).thenReturn(blog);
 		when(blogRepository.findByBlogId(blogId)).thenReturn(Optional.ofNullable(updateBlog));
 
-		Long updateBlogId = blogService.update(updateBlog);
+		Long updateBlogId = blogService.update(updateBlog).getId();
 		Blog targetBlog = blogService.findByBlogId(blogId);
 
 		assertEquals(blogId, updateBlogId);
