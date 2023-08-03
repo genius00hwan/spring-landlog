@@ -19,13 +19,13 @@ public class BlogService {
 		this.memberService = memberService;
 	}
 
-	public Long create(Blog blog) {
+	public Blog create(Blog blog) {
 		validateCreator(blog.getCreatorId());
 		validateBlog(blog.getTitle(), blog.getContents());
 		return blogRepository.save(blog);
 	}
 
-	public Long update(Blog updateBlog) {
+	public Blog update(Blog updateBlog) {
 		validateCreator(updateBlog.getCreatorId());
 		validateBlog(updateBlog.getTitle(), updateBlog.getContents());
 
