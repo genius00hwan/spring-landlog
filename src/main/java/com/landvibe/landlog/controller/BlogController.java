@@ -21,21 +21,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class BlogController {
 
 	private final MemberService memberService;
-	private final BlogService blogService;
 
-	public BlogController(MemberService memberService, BlogService blogService) {
+	public BlogController(MemberService memberService) {
 		this.memberService = memberService;
-		this.blogService = blogService;
 	}
 
 	@GetMapping
 	public String blog(@RequestParam(name = "creatorId") Long creatorId, Model model) {
-		List<Blog> blogs = blogService.findBlogList(creatorId);
 		String name = memberService.findById(creatorId).getName();
 
 		model.addAttribute("creatorId", creatorId);
 		model.addAttribute("name", name);
-		model.addAttribute("blogs", blogs);
 
 		return "blogs/blogList";
 	}
@@ -53,9 +49,6 @@ public class BlogController {
 	@PostMapping("/new")
 	public String createBlog(@RequestParam(name = "creatorId") Long creatorId, BlogForm blogForm,
 		RedirectAttributes redirectAttributes) {
-		Blog blog = new Blog(creatorId, blogForm.getTitle(), blogForm.getContents());
-		blogService.create(blog);
-
 		redirectAttributes.addAttribute("creatorId", creatorId);
 
 		return "redirect:/blogs";
@@ -64,11 +57,9 @@ public class BlogController {
 	@GetMapping("/update")
 	public String updateBlogForm(@RequestParam(name = "creatorId") Long creatorId,
 		@RequestParam(name = "blogId") Long blogId, Model model) {
-		Blog blog = blogService.findByBlogId(blogId);
 		String name = memberService.findById(creatorId).getName();
-
 		model.addAttribute("creatorId", creatorId);
-		model.addAttribute("blog", blog);
+		model.addAttribute("blogId",blogId);
 		model.addAttribute("name", name);
 
 		return "blogs/updateBlogForm";
@@ -76,11 +67,8 @@ public class BlogController {
 
 	@PostMapping("/update")
 	public String updateBlog(BlogUpdateForm updateForm, RedirectAttributes redirectAttributes) {
-		Blog newBlog = new Blog(updateForm.getCreatorId(), updateForm.getTitle(), updateForm.getContents());
-		blogService.update(newBlog);
-		Long creatorId = updateForm.getCreatorId();
-
-		redirectAttributes.addAttribute("creatorId", creatorId);
+		redirectAttributes.addAttribute("creatorId", updateForm.getCreatorId());
+		redirectAttributes.addAttribute("blogId",updateForm.getId());
 
 		return "redirect:/blogs";
 	}
@@ -88,9 +76,8 @@ public class BlogController {
 	@PostMapping("/delete")
 	public String deleteBlog(@RequestParam(name = "creatorId") Long creatorId,
 		@RequestParam(name = "blogId") Long blogId, RedirectAttributes redirectAttributes) {
-		blogService.delete(blogId);
-
 		redirectAttributes.addAttribute("creatorId", creatorId);
+		redirectAttributes.addAttribute("blogId",blogId);
 
 		return "redirect:/blogs";
 	}
