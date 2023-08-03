@@ -15,17 +15,18 @@ public class MemoryBlogRepository implements BlogRepository {
 	private static long sequence = 0L;
 
 	@Override
-	public Long save(Blog blog) {
+	public Blog save(Blog blog) {
 		blog.setId(++sequence);
 		store.put(blog.getId(), blog);
-		return blog.getId();
+
+		return blog;
 	}
 
 	@Override
-	public Long update(Long blogId, Blog updateBlog) {
+	public Blog update(Long blogId, Blog updateBlog) {
 		updateBlog.setId(blogId);
 		store.put(blogId, updateBlog);
-		return blogId;
+		return updateBlog;
 	}
 
 	@Override
