@@ -59,7 +59,7 @@ public class BlogController {
 		@RequestParam(name = "blogId") Long blogId, Model model) {
 		String name = memberService.findById(creatorId).getName();
 		model.addAttribute("creatorId", creatorId);
-		model.addAttribute("blogId",blogId);
+		model.addAttribute("blogId", blogId);
 		model.addAttribute("name", name);
 
 		return "blogs/updateBlogForm";
@@ -68,7 +68,7 @@ public class BlogController {
 	@PostMapping("/update")
 	public String updateBlog(BlogUpdateForm updateForm, RedirectAttributes redirectAttributes) {
 		redirectAttributes.addAttribute("creatorId", updateForm.getCreatorId());
-		redirectAttributes.addAttribute("blogId",updateForm.getId());
+		redirectAttributes.addAttribute("blogId", updateForm.getId());
 
 		return "redirect:/blogs";
 	}
@@ -77,7 +77,7 @@ public class BlogController {
 	public String deleteBlog(@RequestParam(name = "creatorId") Long creatorId,
 		@RequestParam(name = "blogId") Long blogId, RedirectAttributes redirectAttributes) {
 		redirectAttributes.addAttribute("creatorId", creatorId);
-		redirectAttributes.addAttribute("blogId",blogId);
+		redirectAttributes.addAttribute("blogId", blogId);
 
 		return "redirect:/blogs";
 	}

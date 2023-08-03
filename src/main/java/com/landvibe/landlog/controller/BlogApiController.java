@@ -16,7 +16,7 @@ public class BlogApiController {
 	private final BlogService blogService;
 	private final MemberService memberService;
 
-	public BlogApiController( BlogService blogService, MemberService memberService) {
+	public BlogApiController(BlogService blogService, MemberService memberService) {
 		this.blogService = blogService;
 		this.memberService = memberService;
 	}
