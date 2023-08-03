@@ -4,6 +4,7 @@ import com.landvibe.landlog.domain.Member;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -13,7 +14,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MemoryMemberRepositoryTest {
 
 	MemoryMemberRepository repository = new MemoryMemberRepository();
+	Member member;
+	Member member2;
+	String name = "수환";
+	String email = "ksh@landvibe.com";
+	String password = "1234";
 
+	@BeforeEach
+	public void beforEach(){
+		member = new Member(name, email, password);
+		member2 = new Member("동하", "dong@landvibe.com", "5678");
+	}
 	@AfterEach
 	public void afterEach() {
 		repository.clearStore();
@@ -22,7 +33,6 @@ class MemoryMemberRepositoryTest {
 	@Test
 	void save() {
 		//given
-		Member member = new Member("수환", "ksh@landvibe.com", "1234");
 
 		//when
 		repository.save(member);
@@ -35,24 +45,21 @@ class MemoryMemberRepositoryTest {
 	@Test
 	public void findByName() {
 		//given
-		Member member1 = new Member("수환", "ksh@landvibe.com", "1234");
-		repository.save(member1);
-		Member member2 = new Member("동하", "dong@landvibe.com", "5678");
+		repository.save(member);
+
 		repository.save(member2);
 
 		//when
-		Member result = repository.findByName("수환").get();
+		Member result = repository.findByName(name).get();
 
 		//then
-		assertThat(result).isEqualTo(member1);
+		assertThat(result).isEqualTo(member);
 	}
 
 	@Test
 	public void findAll() {
 		//given
-		Member member1 = new Member("승철", "tmdcheol@landvibe.com", "1234");
-		repository.save(member1);
-		Member member2 = new Member("준영", "jyp@landvibe.com", "5678");
+		repository.save(member);
 		repository.save(member2);
 
 		//when
@@ -64,23 +71,19 @@ class MemoryMemberRepositoryTest {
 
 	@Test
 	void findByEmail() {
-		Member member1 = new Member("재승", "jaewin@landvibe.com", "password");
-		repository.save(member1);
-
-		Member member2 = new Member("주민", "zoomin@landvibe.com", "password");
+		repository.save(member);
 		repository.save(member2);
 
 		//when
-		Member result = repository.findByEmail(member1.getEmail()).get();
+		Member result = repository.findByEmail(member.getEmail()).get();
 
 		//then
-		assertThat(member1).isEqualTo(result);
+		assertThat(member).isEqualTo(result);
 	}
 
 	@Test
 	void findById() {
 		//given
-		Member member = new Member("선우", "mentor@landvibe.com", "spring");
 		repository.save(member);
 
 		//when

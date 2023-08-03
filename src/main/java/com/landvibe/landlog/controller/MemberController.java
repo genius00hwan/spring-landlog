@@ -1,5 +1,7 @@
 package com.landvibe.landlog.controller;
 
+import com.landvibe.landlog.controller.form.LoginForm;
+import com.landvibe.landlog.controller.form.MemberForm;
 import com.landvibe.landlog.domain.Member;
 import com.landvibe.landlog.service.MemberService;
 

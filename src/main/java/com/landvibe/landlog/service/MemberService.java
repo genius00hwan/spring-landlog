@@ -1,6 +1,9 @@
 package com.landvibe.landlog.service;
 
-import com.landvibe.landlog.controller.LoginForm;
+import static com.landvibe.landlog.constants.ErrorMessages.*;
+import static com.landvibe.landlog.constants.Pattern.*;
+
+import com.landvibe.landlog.controller.form.LoginForm;
 import com.landvibe.landlog.domain.Member;
 import com.landvibe.landlog.repository.MemberRepository;
 
@@ -14,15 +17,7 @@ import java.util.regex.Pattern;
 @Service
 public class MemberService {
 
-	private static final String EMAIL_REGEX =
-		"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+"
-			+ "(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\""
-			+ "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@"
-			+ "(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9]"
-			+ "(?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}"
-			+ "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:"
-			+ "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
-	private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+
 	private final MemberRepository memberRepository;
 
 	public MemberService(MemberRepository memberRepository) {
@@ -30,23 +25,22 @@ public class MemberService {
 	}
 
 	public Long join(Member member) {
-		validateInvalidInput(member); //중복 회원 검증
+		validateInvalidMember(member); //중복 회원 검증
 		memberRepository.save(member);
 		return member.getId();
 	}
 
-	private void validateInvalidInput(Member member) {
-		validateNoInput(member);
+	void validateInvalidMember(Member member) {
+		validateNoInput(member.getName(),member.getPassword());
 		validateInvalidEmail(member.getEmail());
-		validateDuplicateMember(member);
 	}
 
-	private void validateNoInput(Member member) {
-		if (member.getName().equals("")) {
-			throw new IllegalArgumentException("이름을 입력해주세요.");
+	private void validateNoInput(String name, String password) {
+		if (name.equals("")) {
+			throw new IllegalArgumentException(NO_NAME.get());
 		}
-		if (member.getPassword().equals("")) {
-			throw new IllegalArgumentException("비밀번호를 입력해주세요.");
+		if (password.equals("")) {
+			throw new IllegalArgumentException(NO_PASSWORD.get());
 		}
 	}
 
@@ -56,21 +50,19 @@ public class MemberService {
 				e -> {
 					Matcher matcher = EMAIL_PATTERN.matcher(e);
 					if (!matcher.matches()) {
-						throw new IllegalArgumentException("이메일을 입력해주세요.");
+						throw new IllegalArgumentException(INVALID_EMAIL.get());
 					}
 				},
 				() -> {
-					throw new IllegalArgumentException("이메일을 입력해주세요.");
+					throw new IllegalArgumentException(INVALID_EMAIL.get());
 				}
 			);
 
-	}
-
-	private void validateDuplicateMember(Member member) {
-		memberRepository.findByEmail(member.getEmail())
+		memberRepository.findByEmail(email)
 			.ifPresent(m -> {
-				throw new IllegalStateException("중복된 이메일입니다.");
+				throw new IllegalStateException(DUPLICATE_EMAIL.get());
 			});
+
 	}
 
 	public List<Member> findMembers() {
@@ -79,15 +71,15 @@ public class MemberService {
 
 	public Member findById(Long memberId) {
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new IllegalArgumentException(NO_MEMBER.get()));
 		return member;
 	}
 
 	public Long logIn(LoginForm logInForm) {
 		Member member = memberRepository.findByEmail(logInForm.getEmail())
-			.orElseThrow(() -> new IllegalArgumentException("잘못된 이메일입니다."));
+			.orElseThrow(() -> new IllegalArgumentException(NO_MEMBER.get()));
 		if (!member.getPassword().equals(logInForm.getPassword())) {
-			throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+			throw new IllegalArgumentException(INVALID_PASSWORD.get());
 		}
 		return member.getId();
 	}

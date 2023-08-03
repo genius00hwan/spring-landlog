@@ -1,4 +1,4 @@
-package com.landvibe.landlog.controller;
+package com.landvibe.landlog.controller.form;
 
 public class MemberForm {
 	private String name;
@@ -10,6 +10,7 @@ public class MemberForm {
 		this.email = email;
 		this.password = password;
 	}
+
 	public String getName() {
 		return name;
 	}

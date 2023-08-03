@@ -1,4 +1,4 @@
-package com.landvibe.landlog.controller;
+package com.landvibe.landlog.controller.form;
 
 public class LoginForm {
 	private final String email;
