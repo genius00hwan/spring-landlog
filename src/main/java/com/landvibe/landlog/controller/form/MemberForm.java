@@ -1,24 +1,14 @@
-package com.landvibe.landlog.domain;
+package com.landvibe.landlog.controller.form;
 
-public class Member {
-
-	private Long id;
+public class MemberForm {
 	private String name;
-	private String email;
 	private String password;
+	private String email;
 
-	public Member(String name, String email, String password) {
+	public MemberForm(String name, String email, String password) {
 		this.name = name;
 		this.email = email;
 		this.password = password;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getId() {
-		return id;
 	}
 
 	public String getName() {
@@ -32,4 +22,5 @@ public class Member {
 	public String getPassword() {
 		return password;
 	}
+
 }
