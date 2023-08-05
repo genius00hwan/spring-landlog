@@ -19,24 +19,23 @@ public class BlogService {
 		this.memberService = memberService;
 	}
 
-	public Blog create(Blog blog) {
-		validateCreator(blog.getCreatorId());
+	public Blog create(Long creatorId, Blog blog) {
+		validateCreatorOfBlog(creatorId,blog);
 		validateBlog(blog.getTitle(), blog.getContents());
 		return blogRepository.save(blog);
 	}
 
-	public Blog update(Blog updateBlog) {
-		validateCreator(updateBlog.getCreatorId());
+	public Blog update(Long creatorId, Long blogId, Blog updateBlog) {
+		validateCreatorOfBlog(creatorId,updateBlog);
 		validateBlog(updateBlog.getTitle(), updateBlog.getContents());
-
-		Long blogId = findByBlogId(updateBlog.getId()).getId();
+		validateBlogId(blogId,updateBlog);
 
 		return blogRepository.update(blogId, updateBlog);
 	}
 
-	public Long delete(Long blogId) {
+	public Long delete(Long creatorId, Long blogId) {
 		Blog blog = findByBlogId(blogId);
-		validateCreator(blog.getCreatorId());
+		validateCreatorOfBlog(creatorId,blog);
 		return blogRepository.delete(blog.getId());
 	}
 
@@ -46,8 +45,16 @@ public class BlogService {
 	}
 
 	public Blog findByBlogId(Long blogId) {
-		return blogRepository.findByBlogId(blogId)
+		Blog blog =  blogRepository.findByBlogId(blogId)
 			.orElseThrow(() -> new IllegalArgumentException(NO_BLOG.get()));
+		validateBlogId(blogId,blog);
+		return blog;
+	}
+	public void validateCreatorOfBlog(Long creatorId, Blog blog){
+		validateCreator(creatorId);
+		if (!blog.getCreatorId().equals(creatorId)){
+			throw new IllegalArgumentException(INVALID_CREATOR_ID.get());
+		}
 	}
 
 	public void validateCreator(Long creatorId) {
@@ -60,6 +67,11 @@ public class BlogService {
 		}
 		if (contents.equals("")) {
 			throw new IllegalArgumentException(NO_CONTENTS.get());
+		}
+	}
+	public void validateBlogId(Long blogId, Blog blog){
+		if (!blog.getId().equals(blogId)){
+			throw new IllegalArgumentException(INVALID_BLOG_ID.get());
 		}
 	}
 
