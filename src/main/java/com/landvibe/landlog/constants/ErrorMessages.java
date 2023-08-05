@@ -11,6 +11,9 @@ public enum ErrorMessages {
 	INVALID_PASSWORD("잘못된 비밀번호입니다."),
 	NO_PASSWORD("비밀번호를 입력해주세요."),
 
+
+	INVALID_BLOG_ID("블로그 ID 오류!"),
+	INVALID_CREATOR_ID("사용자 ID 오류!"),
 	NO_BLOG("존재하지 않는 블로그입니다."),
 	NO_TITLE("제목을 입력해주세요."),
 	NO_CONTENTS("내용을 입력해주세요.");
