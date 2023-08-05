@@ -12,39 +12,33 @@ import com.landvibe.landlog.service.BlogService;
 public class BlogApiController {
 
 	private final BlogService blogService;
+
 	public BlogApiController(BlogService blogService) {
 		this.blogService = blogService;
 	}
 
 	@GetMapping
 	public List<Blog> list(@RequestParam Long creatorId) {
-		blogService.validateCreator(creatorId);
 		return blogService.findBlogList(creatorId);
 	}
 
 	@PostMapping
 	public Blog create(@RequestParam Long creatorId, @RequestBody Blog blog) {
-		blogService.validateCreator(creatorId);
-		blogService.validateBlog(blog.getTitle(), blog.getContents());
-		return blogService.create(blog);
+		return blogService.create(creatorId, blog);
 	}
 
 	@GetMapping(value = "/{blogId}")
-	public Blog get(@RequestParam Long creatorId, @PathVariable("blogId") Long blogId) {
-		blogService.validateCreator(creatorId);
+	public Blog get(@PathVariable("blogId") Long blogId) {
 		return blogService.findByBlogId(blogId);
 	}
 
 	@PutMapping(value = "/{blogId}")
 	public Blog update(@RequestParam Long creatorId, @PathVariable("blogId") Long blogId, @RequestBody Blog blog) {
-		blogService.validateCreator(creatorId);
-		blogService.validateBlog(blog.getTitle(), blog.getContents());
-		return blogService.update(blog);
+		return blogService.update(creatorId, blogId, blog);
 	}
 
 	@DeleteMapping(value = "/{blogId}")
 	public void delete(@RequestParam Long creatorId, @PathVariable("blogId") Long blogId) {
-		blogService.validateCreator(creatorId);
-		blogService.delete(blogId);
+		blogService.delete(creatorId,blogId);
 	}
 }
