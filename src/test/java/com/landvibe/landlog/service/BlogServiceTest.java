@@ -5,7 +5,6 @@ import com.landvibe.landlog.controller.form.BlogUpdateForm;
 import com.landvibe.landlog.domain.Blog;
 import com.landvibe.landlog.domain.Member;
 import com.landvibe.landlog.repository.MemoryBlogRepository;
-import com.landvibe.landlog.repository.MemoryMemberRepository;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,8 +66,8 @@ public class BlogServiceTest {
 	@DisplayName("블로그 생성 성공")
 	@Test
 	public void create() {
-		when(blogRepository.save(blog)).thenReturn(blogId);
-		assertEquals(blogId, blogService.create(blog));
+		when(blogRepository.save(blog)).thenReturn(blog);
+		assertEquals(blog, blogService.create(blogId, blog));
 		verify(blogRepository, times(1)).save(blog);
 	}
 
@@ -77,7 +76,7 @@ public class BlogServiceTest {
 	public void create_invalidTitle() {
 		Blog invalidBlog = new Blog(creatorId, invalidTitle, contents);
 		Exception e = assertThrows(Exception.class,
-			() -> blogService.create(invalidBlog));
+			() -> blogService.create(creatorId, invalidBlog));
 		assertEquals(e.getMessage(), NO_TITLE.get());
 	}
 
@@ -87,23 +86,23 @@ public class BlogServiceTest {
 		Blog invalidBlog = new Blog(creatorId, title, invalidContents);
 
 		Exception e = assertThrows(Exception.class,
-			() -> blogService.create(invalidBlog));
+			() -> blogService.create(creatorId, invalidBlog));
 		assertEquals(e.getMessage(), NO_CONTENTS.get());
 	}
 
 	@DisplayName("블로그 업데이트 성공")
 	@Test
 	public void update() {
-		when(blogRepository.update(blogId, updateBlog)).thenReturn(blogId);
+		when(blogRepository.update(blogId, updateBlog)).thenReturn(blog);
 		when(blogRepository.findByBlogId(blogId)).thenReturn(Optional.ofNullable(updateBlog));
 
-		Long updateBlogId = blogService.update(updateBlog);
+		Long updateBlogId = blogService.update(creatorId, blogId, updateBlog).getId();
 		Blog targetBlog = blogService.findByBlogId(blogId);
 
 		assertEquals(blogId, updateBlogId);
 		assertEquals(updatedTitle, targetBlog.getTitle());
 		assertEquals(updatedContents, targetBlog.getContents());
-		verify(blogRepository, times(1)).update(blogId,updateBlog);
+		verify(blogRepository, times(1)).update(blogId, updateBlog);
 	}
 
 	@DisplayName("블로그 업데이트 실패 -> 잘못된 제목")
@@ -112,7 +111,7 @@ public class BlogServiceTest {
 		Blog invalidUpdateBlog = new Blog(creatorId, invalidTitle, updatedContents);
 
 		Exception e = assertThrows(Exception.class,
-			() -> blogService.update(invalidUpdateBlog));
+			() -> blogService.update(creatorId,blogId,invalidUpdateBlog));
 		assertEquals(e.getMessage(), NO_TITLE.get());
 	}
 
@@ -122,7 +121,7 @@ public class BlogServiceTest {
 		Blog invalidUpdateBlog = new Blog(creatorId, updatedTitle, invalidContents);
 
 		Exception e = assertThrows(Exception.class,
-			() -> blogService.update(invalidUpdateBlog));
+			() -> blogService.update(creatorId,blogId,invalidUpdateBlog));
 		assertEquals(e.getMessage(), NO_CONTENTS.get());
 	}
 
@@ -132,7 +131,7 @@ public class BlogServiceTest {
 		when(blogRepository.delete(blogId)).thenReturn(blogId);
 		when(blogRepository.findByBlogId(blogId)).thenReturn(Optional.ofNullable(blog));
 
-		blogService.delete(blogId);
+		blogService.delete(creatorId,blogId);
 
 		verify(blogRepository, times(1)).delete(blogId);
 	}
@@ -140,10 +139,10 @@ public class BlogServiceTest {
 	@DisplayName("블로그 삭제 실패")
 	@Test
 	public void delete_fail() {
-		blogService.create(blog);
+		blogService.create(creatorId,blog);
 
 		Exception e = assertThrows(Exception.class,
-			() -> blogService.delete(0L));
+			() -> blogService.delete(creatorId,0L));
 		assertEquals(e.getMessage(), NO_BLOG.get());
 
 		verify(blogRepository, times(1)).findByBlogId(0L);

@@ -4,7 +4,7 @@ public class BlogForm {
 	private String title;
 	private String contents;
 
-	public BlogForm( String title, String contents) {
+	public BlogForm(String title, String contents) {
 		this.title = title;
 		this.contents = contents;
 	}
@@ -16,6 +16,5 @@ public class BlogForm {
 	public String getContents() {
 		return contents;
 	}
-
 
 }

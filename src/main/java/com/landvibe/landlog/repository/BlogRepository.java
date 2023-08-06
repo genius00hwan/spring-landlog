@@ -6,9 +6,9 @@ import java.util.Optional;
 import com.landvibe.landlog.domain.Blog;
 
 public interface BlogRepository {
-	Long save(Blog blog);
+	Blog save(Blog blog);
 
-	Long update(Long blogId, Blog newBlog);
+	Blog update(Long blogId, Blog newBlog);
 
 	Long delete(Long blogId);
 

@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 @Service
 public class MemberService {
 
-
 	private final MemberRepository memberRepository;
 
 	public MemberService(MemberRepository memberRepository) {
@@ -31,7 +30,7 @@ public class MemberService {
 	}
 
 	void validateInvalidMember(Member member) {
-		validateNoInput(member.getName(),member.getPassword());
+		validateNoInput(member.getName(), member.getPassword());
 		validateInvalidEmail(member.getEmail());
 	}
 
