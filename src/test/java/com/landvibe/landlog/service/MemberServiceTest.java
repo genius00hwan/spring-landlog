@@ -17,7 +17,6 @@ class MemberServiceTest {
 
 	MemberService memberService;
 	MemoryMemberRepository memberRepository;
-	Member member;
 	String name = "수환";
 	String email = "ksh@landvibe.com";
 	String password = "1234";
@@ -25,12 +24,16 @@ class MemberServiceTest {
 	String invalidPassword = "45556";
 	String invalidEmail = "invalid@landvibe.com";
 	String empty = "";
+	Member member = Member.builder()
+		.name(name)
+		.email(email)
+		.password(password)
+		.build();
 
 	@BeforeEach
 	public void beforeEach() {
 		memberRepository = new MemoryMemberRepository();
 		memberService = new MemberService(memberRepository);
-		member = new Member(name, email, password);
 	}
 
 	@AfterEach
@@ -41,7 +44,6 @@ class MemberServiceTest {
 	@Test
 	public void 회원가입_성공() {
 		//Given
-
 		//When
 		Long saveId = memberService.join(member);
 		//Then
@@ -51,39 +53,53 @@ class MemberServiceTest {
 
 	@Test
 	public void 이메일_형식_예외() {
-		Member member2 = new Member(name, notEmail, password);
-		//when
+		Member invalidMember = Member.builder()
+			.name(name)
+			.email(notEmail)
+			.password(password)
+			.build();		//when
 		Exception e = assertThrows(Exception.class,
-			() -> memberService.join(member2));
+			() -> memberService.join(invalidMember));
 		assertThat(e.getMessage()).isEqualTo(INVALID_EMAIL.get());
 	}
 
 	@Test
 	public void 이름_입력안함() {
-		Member member = new Member(empty, email, password);
+		Member invalidMember = Member.builder()
+			.name(empty)
+			.email(email)
+			.password(password)
+			.build();
 		//when
 		Exception e = assertThrows(Exception.class,
-			() -> memberService.join(member));
+			() -> memberService.join(invalidMember));
 		assertThat(e.getMessage()).isEqualTo(NO_NAME.get());
 	}
 
 	@Test
 	public void 비밀번호_입력안함() {
-		Member member = new Member(name, email, empty);
+		Member invalidMember = Member.builder()
+			.name(name)
+			.email(email)
+			.password(empty)
+			.build();
 		//when
 		Exception e = assertThrows(Exception.class,
-			() -> memberService.join(member));
+			() -> memberService.join(invalidMember));
 		assertThat(e.getMessage()).isEqualTo(NO_PASSWORD.get());
 	}
 
 	@Test
 	public void 중복_이메일_예외() throws Exception {
 		//given
-		Member member2 = new Member("동하", email, "4567");
-		//when
+		Member invalidMember = Member.builder()
+			.name("other")
+			.email(email)
+			.password(password)
+			.build();		//when
 		memberService.join(member);
 		IllegalStateException e = assertThrows(IllegalStateException.class,
-			() -> memberService.join(member2));//예외가 발생해야 한다.
+			() -> memberService.join(invalidMember));//예외가 발생해야 한다.
 		assertThat(e.getMessage()).isEqualTo(DUPLICATE_EMAIL.get());
 	}
 
@@ -92,7 +108,10 @@ class MemberServiceTest {
 		//given
 		//when
 		memberService.join(member);
-		LoginForm loginForm = new LoginForm(email, password);
+		LoginForm loginForm = LoginForm.builder()
+			.email(email)
+			.password(password)
+			.build();
 
 		//then
 		Long memberId = memberService.logIn(loginForm);
@@ -104,11 +123,14 @@ class MemberServiceTest {
 		//given
 		//when
 		memberService.join(member);
-		LoginForm loginForm = new LoginForm(invalidEmail, password);
+		LoginForm invalidLoginForm = LoginForm.builder()
+			.email(invalidEmail)
+			.password(password)
+			.build();
 
 		//then
 		Exception e = assertThrows(Exception.class,
-			() -> memberService.logIn(loginForm));
+			() -> memberService.logIn(invalidLoginForm));
 		assertThat(e.getMessage()).isEqualTo(NO_MEMBER.get());
 	}
 
@@ -116,11 +138,13 @@ class MemberServiceTest {
 	public void 로그인_실패_잘못된비밀번호() {
 		//when
 		memberService.join(member);
-		LoginForm loginForm = new LoginForm(email, invalidPassword);
-
+		LoginForm invalidLoginForm = LoginForm.builder()
+			.email(email)
+			.password(invalidPassword)
+			.build();
 		//then
 		Exception e = assertThrows(Exception.class,
-			() -> memberService.logIn(loginForm));
+			() -> memberService.logIn(invalidLoginForm));
 		assertThat(e.getMessage()).isEqualTo(INVALID_PASSWORD.get());
 	}
 }
