@@ -1,5 +1,12 @@
 package com.landvibe.landlog.controller.form;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
 public class BlogUpdateForm {
 	Long id;
 	Long creatorId;
@@ -11,21 +18,5 @@ public class BlogUpdateForm {
 		this.id = id;
 		this.title = title;
 		this.contents = contents;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public Long getCreatorId() {
-		return creatorId;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public String getContents() {
-		return contents;
 	}
 }
