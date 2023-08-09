@@ -39,23 +39,29 @@ public class BlogServiceTest {
 	String invalidContents = "";
 	Long creatorId = 1L;
 	Long blogId = 1L;
+	Blog blog = Blog.builder()
+		.creatorId(creatorId)
+		.id(blogId)
+		.title(title)
+		.contents(contents)
+		.build();
 
-	BlogForm blogForm;
-	BlogUpdateForm updateForm;
-	Blog blog;
-	Blog updateBlog;
-	Member member;
+	Blog updateBlog = Blog.builder()
+		.creatorId(creatorId)
+		.id(blogId)
+		.title(updatedTitle)
+		.contents(updatedContents)
+		.build();
+	Member member = Member.builder()
+		.id(creatorId)
+		.name("이름")
+		.email("email@landvibe.com")
+		.password("password")
+		.build();
 
 	@BeforeEach
 	public void beforeEach() {
 		blogService = new BlogService(blogRepository, memberService);
-		blogForm = new BlogForm(title, contents);
-		updateForm = new BlogUpdateForm(creatorId, blogId, updatedTitle, updatedContents);
-		blog = new Blog(creatorId, blogForm.getTitle(), blogForm.getContents());
-		updateBlog = new Blog(updateForm.getCreatorId(), updateForm.getTitle(), updateForm.getContents());
-		blog.setId(blogId);
-		updateBlog.setId(blogId);
-		member = new Member("name", "email@landvibe.com", "password");
 	}
 
 	@AfterEach
@@ -74,20 +80,29 @@ public class BlogServiceTest {
 	@DisplayName("블로그 생성 실패 -> 잘못된 제목")
 	@Test
 	public void create_invalidTitle() {
-		Blog invalidBlog = new Blog(creatorId, invalidTitle, contents);
+		Blog invalidBlog = Blog.builder()
+			.creatorId(creatorId)
+			.title(invalidTitle)
+			.contents(contents)
+			.build();
+
 		Exception e = assertThrows(Exception.class,
 			() -> blogService.create(creatorId, invalidBlog));
-		assertEquals(e.getMessage(), NO_TITLE.get());
+		assertEquals(NO_TITLE.get(), e.getMessage());
 	}
 
 	@DisplayName("블로그 생성 실패 -> 잘못된 내용")
 	@Test
 	public void create_invalidContents() {
-		Blog invalidBlog = new Blog(creatorId, title, invalidContents);
+		Blog invalidBlog = Blog.builder()
+			.creatorId(creatorId)
+			.title(title)
+			.contents(invalidContents)
+			.build();
 
 		Exception e = assertThrows(Exception.class,
-			() -> blogService.create(creatorId, invalidBlog));
-		assertEquals(e.getMessage(), NO_CONTENTS.get());
+			() -> blogService.create(invalidBlog.getCreatorId(), invalidBlog));
+		assertEquals(NO_CONTENTS.get(), e.getMessage());
 	}
 
 	@DisplayName("블로그 업데이트 성공")
@@ -108,20 +123,30 @@ public class BlogServiceTest {
 	@DisplayName("블로그 업데이트 실패 -> 잘못된 제목")
 	@Test
 	public void update_invalidTitle() {
-		Blog invalidUpdateBlog = new Blog(creatorId, invalidTitle, updatedContents);
+		Blog invalidUpdateBlog = Blog.builder()
+			.creatorId(creatorId)
+			.id(blogId)
+			.title(invalidTitle)
+			.contents(updatedContents)
+			.build();
 
 		Exception e = assertThrows(Exception.class,
-			() -> blogService.update(creatorId,blogId,invalidUpdateBlog));
+			() -> blogService.update(creatorId, blogId, invalidUpdateBlog));
 		assertEquals(e.getMessage(), NO_TITLE.get());
 	}
 
 	@DisplayName("블로그 업데이트 실패 -> 잘못된 내용")
 	@Test
 	public void update_invalidContents() {
-		Blog invalidUpdateBlog = new Blog(creatorId, updatedTitle, invalidContents);
+		Blog invalidUpdateBlog = Blog.builder()
+			.creatorId(creatorId)
+			.id(blogId)
+			.title(updatedTitle)
+			.contents(invalidContents)
+			.build();
 
 		Exception e = assertThrows(Exception.class,
-			() -> blogService.update(creatorId,blogId,invalidUpdateBlog));
+			() -> blogService.update(creatorId, blogId, invalidUpdateBlog));
 		assertEquals(e.getMessage(), NO_CONTENTS.get());
 	}
 
@@ -131,7 +156,7 @@ public class BlogServiceTest {
 		when(blogRepository.delete(blogId)).thenReturn(blogId);
 		when(blogRepository.findByBlogId(blogId)).thenReturn(Optional.ofNullable(blog));
 
-		blogService.delete(creatorId,blogId);
+		blogService.delete(creatorId, blogId);
 
 		verify(blogRepository, times(1)).delete(blogId);
 	}
@@ -139,10 +164,10 @@ public class BlogServiceTest {
 	@DisplayName("블로그 삭제 실패")
 	@Test
 	public void delete_fail() {
-		blogService.create(creatorId,blog);
+		blogService.create(creatorId, blog);
 
 		Exception e = assertThrows(Exception.class,
-			() -> blogService.delete(creatorId,0L));
+			() -> blogService.delete(creatorId, 0L));
 		assertEquals(e.getMessage(), NO_BLOG.get());
 
 		verify(blogRepository, times(1)).findByBlogId(0L);

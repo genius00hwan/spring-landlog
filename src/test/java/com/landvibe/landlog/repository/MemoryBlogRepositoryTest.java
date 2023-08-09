@@ -24,7 +24,11 @@ class MemoryBlogRepositoryTest {
 	@Test
 	void save() {
 		//given
-		Blog blog = new Blog(creatorId, title, contents);
+		Blog blog = Blog.builder()
+			.creatorId(creatorId)
+			.title(title)
+			.contents(contents)
+			.build();
 
 		//when
 		repository.save(blog);
@@ -40,13 +44,21 @@ class MemoryBlogRepositoryTest {
 		String expectedTitle = "바뀐 제목";
 		String expectedContents = "바뀐 내용";
 
-		Blog blog = new Blog(creatorId, title, contents);
-		Blog updatedBlog = new Blog(creatorId, "바뀐 제목", "바뀐 내용");
-
+		Blog blog = Blog.builder()
+			.creatorId(creatorId)
+			.title(title)
+			.contents(contents)
+			.build();
+		repository.save(blog);
 
 		//when
-		repository.save(blog);
-		repository.update(blog.getId(),updatedBlog);
+		Blog updatedBlog = Blog.builder()
+			.creatorId(creatorId)
+			.id(blog.getId())
+			.title("바뀐 제목")
+			.contents("바뀐 내용")
+			.build();
+		repository.update(blog.getId(), updatedBlog);
 
 		//then
 		Blog result = repository.findByBlogId(updatedBlog.getId()).get();
@@ -57,7 +69,11 @@ class MemoryBlogRepositoryTest {
 	@Test
 	void delete() {
 		//given
-		Blog blog = new Blog(creatorId, title, contents);
+		Blog blog = Blog.builder()
+			.creatorId(creatorId)
+			.title(title)
+			.contents(contents)
+			.build();
 		repository.save(blog);
 
 		//when

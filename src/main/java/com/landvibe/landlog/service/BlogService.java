@@ -20,13 +20,13 @@ public class BlogService {
 	}
 
 	public Blog create(Long creatorId, Blog blog) {
-		validateCreatorOfBlog(creatorId,blog);
+		validateCreator(creatorId);
 		validateBlog(blog.getTitle(), blog.getContents());
 		return blogRepository.save(blog);
 	}
 
 	public Blog update(Long creatorId, Long blogId, Blog updateBlog) {
-		validateCreatorOfBlog(creatorId,updateBlog);
+		validateCreator(creatorId);
 		validateBlog(updateBlog.getTitle(), updateBlog.getContents());
 		validateBlogId(blogId,updateBlog);
 
@@ -35,7 +35,7 @@ public class BlogService {
 
 	public Long delete(Long creatorId, Long blogId) {
 		Blog blog = findByBlogId(blogId);
-		validateCreatorOfBlog(creatorId,blog);
+		validateCreator(creatorId);
 		return blogRepository.delete(blog.getId());
 	}
 
@@ -49,12 +49,6 @@ public class BlogService {
 			.orElseThrow(() -> new IllegalArgumentException(NO_BLOG.get()));
 		validateBlogId(blogId,blog);
 		return blog;
-	}
-	public void validateCreatorOfBlog(Long creatorId, Blog blog){
-		validateCreator(creatorId);
-		if (!blog.getCreatorId().equals(creatorId)){
-			throw new IllegalArgumentException(INVALID_CREATOR_ID.get());
-		}
 	}
 
 	public void validateCreator(Long creatorId) {

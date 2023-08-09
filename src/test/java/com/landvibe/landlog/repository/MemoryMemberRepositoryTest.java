@@ -14,17 +14,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MemoryMemberRepositoryTest {
 
 	MemoryMemberRepository repository = new MemoryMemberRepository();
-	Member member;
-	Member member2;
 	String name = "수환";
 	String email = "ksh@landvibe.com";
 	String password = "1234";
+	Member member = Member.builder()
+		.name(name)
+		.email(email)
+		.password(password)
+		.build();
 
-	@BeforeEach
-	public void beforEach(){
-		member = new Member(name, email, password);
-		member2 = new Member("동하", "dong@landvibe.com", "5678");
-	}
+	Member member2 = Member.builder()
+		.name("동하")
+		.email("dongha@landvibe.com")
+		.password("5678")
+		.build();
+
 	@AfterEach
 	public void afterEach() {
 		repository.clearStore();

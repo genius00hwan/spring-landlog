@@ -1,5 +1,12 @@
 package com.landvibe.landlog.controller.form;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
 public class BlogForm {
 	private String title;
 	private String contents;
@@ -8,13 +15,4 @@ public class BlogForm {
 		this.title = title;
 		this.contents = contents;
 	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public String getContents() {
-		return contents;
-	}
-
 }
