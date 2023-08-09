@@ -1,5 +1,12 @@
 package com.landvibe.landlog.controller.form;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
 public class MemberForm {
 	private String name;
 	private String password;
@@ -10,17 +17,4 @@ public class MemberForm {
 		this.email = email;
 		this.password = password;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
 }
