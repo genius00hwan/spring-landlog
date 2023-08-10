@@ -57,4 +57,9 @@
      - MemberService 의존성 주입
      - model <- findById()
      - html 파일 (blogs/blogList) 와 매칭
+
+
+
+[5. swaggerAPI]
+![img.png](img.png)
    
