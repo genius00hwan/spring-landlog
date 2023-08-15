@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -28,14 +29,15 @@ public class MemberController {
 
 	@PostMapping(value = "/members/new")
 	public String create(MemberForm form) {
-		Member member;
-		try {
-			member = new Member(form.getName(), form.getEmail(), form.getPassword());
-			memberService.join(member);
-			return "redirect:/";
-		} catch (Exception e) {
-			return "redirect:/";
-		}
+
+		Member member = Member.builder()
+			.name(form.getName())
+			.email(form.getEmail())
+			.password(form.getPassword())
+			.build();
+
+		memberService.join(member);
+		return "redirect:/";
 	}
 
 	@GetMapping(value = "/members")
@@ -53,12 +55,8 @@ public class MemberController {
 	@PostMapping(value = "/members/login")
 	public String logIn(LoginForm logInForm, RedirectAttributes redirectAttributes) {
 		Long memberId;
-		try {
-			memberId = memberService.logIn(logInForm);
-			redirectAttributes.addAttribute("creatorId", memberId);
-			return "redirect:/blogs";
-		} catch (IllegalArgumentException e) {
-			return "redirect:/";
-		}
+		memberId = memberService.logIn(logInForm.getEmail(), logInForm.getPassword());
+		redirectAttributes.addAttribute("creatorId", memberId);
+		return "redirect:/blogs";
 	}
 }
