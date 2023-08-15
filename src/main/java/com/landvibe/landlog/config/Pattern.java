@@ -1,4 +1,4 @@
-package com.landvibe.landlog.constants;
+package com.landvibe.landlog.config;
 
 public class Pattern {
 	private static final String EMAIL_REGEX =

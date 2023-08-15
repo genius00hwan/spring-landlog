@@ -1,6 +1,5 @@
 package com.landvibe.landlog.service;
 
-import com.landvibe.landlog.controller.form.LoginForm;
 import com.landvibe.landlog.domain.Member;
 import com.landvibe.landlog.repository.MemoryMemberRepository;
 
@@ -8,7 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.landvibe.landlog.constants.ErrorMessages.*;
+import static com.landvibe.landlog.exception.ErrorMessages.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -57,10 +56,10 @@ class MemberServiceTest {
 			.name(name)
 			.email(notEmail)
 			.password(password)
-			.build();		//when
+			.build();        //when
 		Exception e = assertThrows(Exception.class,
 			() -> memberService.join(invalidMember));
-		assertThat(e.getMessage()).isEqualTo(INVALID_EMAIL.get());
+		assertThat(e.getMessage()).isEqualTo(INVALID_EMAIL_MESSAGE.getErrorMessage());
 	}
 
 	@Test
@@ -73,7 +72,7 @@ class MemberServiceTest {
 		//when
 		Exception e = assertThrows(Exception.class,
 			() -> memberService.join(invalidMember));
-		assertThat(e.getMessage()).isEqualTo(NO_NAME.get());
+		assertThat(e.getMessage()).isEqualTo(NO_NAME_MESSAGE.getErrorMessage());
 	}
 
 	@Test
@@ -86,7 +85,7 @@ class MemberServiceTest {
 		//when
 		Exception e = assertThrows(Exception.class,
 			() -> memberService.join(invalidMember));
-		assertThat(e.getMessage()).isEqualTo(NO_PASSWORD.get());
+		assertThat(e.getMessage()).isEqualTo(NO_PASSWORD_MESSAGE.getErrorMessage());
 	}
 
 	@Test
@@ -96,11 +95,11 @@ class MemberServiceTest {
 			.name("other")
 			.email(email)
 			.password(password)
-			.build();		//when
+			.build();
 		memberService.join(member);
 		IllegalStateException e = assertThrows(IllegalStateException.class,
 			() -> memberService.join(invalidMember));//예외가 발생해야 한다.
-		assertThat(e.getMessage()).isEqualTo(DUPLICATE_EMAIL.get());
+		assertThat(e.getMessage()).isEqualTo(DUPLICATE_EMAIL_MESSAGE.getErrorMessage());
 	}
 
 	@Test
@@ -108,13 +107,8 @@ class MemberServiceTest {
 		//given
 		//when
 		memberService.join(member);
-		LoginForm loginForm = LoginForm.builder()
-			.email(email)
-			.password(password)
-			.build();
-
 		//then
-		Long memberId = memberService.logIn(loginForm);
+		Long memberId = memberService.logIn(email, password);
 		assertThat(memberId).isEqualTo(member.getId());
 	}
 
@@ -123,28 +117,19 @@ class MemberServiceTest {
 		//given
 		//when
 		memberService.join(member);
-		LoginForm invalidLoginForm = LoginForm.builder()
-			.email(invalidEmail)
-			.password(password)
-			.build();
-
 		//then
 		Exception e = assertThrows(Exception.class,
-			() -> memberService.logIn(invalidLoginForm));
-		assertThat(e.getMessage()).isEqualTo(NO_MEMBER.get());
+			() -> memberService.logIn(invalidEmail, password));
+		assertThat(e.getMessage()).isEqualTo(NO_MEMBER_MESSAGE.getErrorMessage());
 	}
 
 	@Test
 	public void 로그인_실패_잘못된비밀번호() {
 		//when
 		memberService.join(member);
-		LoginForm invalidLoginForm = LoginForm.builder()
-			.email(email)
-			.password(invalidPassword)
-			.build();
 		//then
 		Exception e = assertThrows(Exception.class,
-			() -> memberService.logIn(invalidLoginForm));
-		assertThat(e.getMessage()).isEqualTo(INVALID_PASSWORD.get());
+			() -> memberService.logIn(email, invalidPassword));
+		assertThat(e.getMessage()).isEqualTo(INVALID_PASSWORD_MESSAGE.getErrorMessage());
 	}
 }

@@ -60,6 +60,4 @@
 
 
 
-[5. swaggerAPI]
-![img.png](img.png)
-   
+[5. swaggerAPI] 
