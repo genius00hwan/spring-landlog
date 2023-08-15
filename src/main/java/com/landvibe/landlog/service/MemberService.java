@@ -1,10 +1,10 @@
 package com.landvibe.landlog.service;
 
-import static com.landvibe.landlog.constants.ErrorMessages.*;
-import static com.landvibe.landlog.constants.Pattern.*;
+import static com.landvibe.landlog.exception.ErrorMessages.*;
+import static com.landvibe.landlog.config.Pattern.*;
 
-import com.landvibe.landlog.controller.form.LoginForm;
 import com.landvibe.landlog.domain.Member;
+import com.landvibe.landlog.exception.MemberException;
 import com.landvibe.landlog.repository.MemberRepository;
 
 import org.springframework.stereotype.Service;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class MemberService {
@@ -36,10 +35,10 @@ public class MemberService {
 
 	private void validateNoInput(String name, String password) {
 		if (name.equals("")) {
-			throw new IllegalArgumentException(NO_NAME.get());
+			throw new MemberException(NO_NAME_MESSAGE);
 		}
 		if (password.equals("")) {
-			throw new IllegalArgumentException(NO_PASSWORD.get());
+			throw new MemberException(NO_PASSWORD_MESSAGE);
 		}
 	}
 
@@ -49,17 +48,19 @@ public class MemberService {
 				e -> {
 					Matcher matcher = EMAIL_PATTERN.matcher(e);
 					if (!matcher.matches()) {
-						throw new IllegalArgumentException(INVALID_EMAIL.get());
+						throw new MemberException(INVALID_EMAIL_MESSAGE);
+						// 이메일 형식이 아닐 때
 					}
 				},
 				() -> {
-					throw new IllegalArgumentException(INVALID_EMAIL.get());
+					throw new MemberException(NO_EMAIL_MESSAGE);
+					// 아무것도 입력하지 않은 경우
 				}
 			);
 
 		memberRepository.findByEmail(email)
 			.ifPresent(m -> {
-				throw new IllegalStateException(DUPLICATE_EMAIL.get());
+				throw new MemberException(DUPLICATE_EMAIL_MESSAGE);
 			});
 
 	}
@@ -70,15 +71,15 @@ public class MemberService {
 
 	public Member findById(Long memberId) {
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException(NO_MEMBER.get()));
+			.orElseThrow(() -> new MemberException(NO_MEMBER_MESSAGE));
 		return member;
 	}
 
-	public Long logIn(LoginForm logInForm) {
-		Member member = memberRepository.findByEmail(logInForm.getEmail())
-			.orElseThrow(() -> new IllegalArgumentException(NO_MEMBER.get()));
-		if (!member.getPassword().equals(logInForm.getPassword())) {
-			throw new IllegalArgumentException(INVALID_PASSWORD.get());
+	public Long logIn(String email, String password) {
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(NO_MEMBER_MESSAGE));
+		if (!member.getPassword().equals(password)) {
+			throw new MemberException(INVALID_PASSWORD_MESSAGE);
 		}
 		return member.getId();
 	}
