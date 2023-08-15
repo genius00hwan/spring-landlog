@@ -1,7 +1,5 @@
 package com.landvibe.landlog.service;
 
-import com.landvibe.landlog.controller.form.BlogForm;
-import com.landvibe.landlog.controller.form.BlogUpdateForm;
 import com.landvibe.landlog.domain.Blog;
 import com.landvibe.landlog.domain.Member;
 import com.landvibe.landlog.repository.MemoryBlogRepository;
@@ -14,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.landvibe.landlog.constants.ErrorMessages.*;
+import static com.landvibe.landlog.exception.ErrorMessages.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -88,7 +86,7 @@ public class BlogServiceTest {
 
 		Exception e = assertThrows(Exception.class,
 			() -> blogService.create(creatorId, invalidBlog));
-		assertEquals(NO_TITLE.get(), e.getMessage());
+		assertEquals(NO_TITLE_MESSAGE.getErrorMessage(), e.getMessage());
 	}
 
 	@DisplayName("블로그 생성 실패 -> 잘못된 내용")
@@ -102,7 +100,7 @@ public class BlogServiceTest {
 
 		Exception e = assertThrows(Exception.class,
 			() -> blogService.create(invalidBlog.getCreatorId(), invalidBlog));
-		assertEquals(NO_CONTENTS.get(), e.getMessage());
+		assertEquals(NO_CONTENTS_MESSAGE.getErrorMessage(), e.getMessage());
 	}
 
 	@DisplayName("블로그 업데이트 성공")
@@ -132,7 +130,7 @@ public class BlogServiceTest {
 
 		Exception e = assertThrows(Exception.class,
 			() -> blogService.update(creatorId, blogId, invalidUpdateBlog));
-		assertEquals(e.getMessage(), NO_TITLE.get());
+		assertEquals(e.getMessage(), NO_TITLE_MESSAGE.getErrorMessage());
 	}
 
 	@DisplayName("블로그 업데이트 실패 -> 잘못된 내용")
@@ -147,7 +145,7 @@ public class BlogServiceTest {
 
 		Exception e = assertThrows(Exception.class,
 			() -> blogService.update(creatorId, blogId, invalidUpdateBlog));
-		assertEquals(e.getMessage(), NO_CONTENTS.get());
+		assertEquals(e.getMessage(), NO_CONTENTS_MESSAGE.getErrorMessage());
 	}
 
 	@DisplayName("블로그 삭제 성공")
@@ -168,7 +166,7 @@ public class BlogServiceTest {
 
 		Exception e = assertThrows(Exception.class,
 			() -> blogService.delete(creatorId, 0L));
-		assertEquals(e.getMessage(), NO_BLOG.get());
+		assertEquals(e.getMessage(), NO_BLOG_MESSAGE.getErrorMessage());
 
 		verify(blogRepository, times(1)).findByBlogId(0L);
 		verify(blogRepository, never()).delete(any(Long.class));
