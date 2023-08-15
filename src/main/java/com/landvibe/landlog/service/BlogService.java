@@ -1,12 +1,13 @@
 package com.landvibe.landlog.service;
 
-import static com.landvibe.landlog.constants.ErrorMessages.*;
+import static com.landvibe.landlog.exception.ErrorMessages.*;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.landvibe.landlog.domain.Blog;
+import com.landvibe.landlog.exception.BlogException;
 import com.landvibe.landlog.repository.BlogRepository;
 
 @Service
@@ -46,7 +47,7 @@ public class BlogService {
 
 	public Blog findByBlogId(Long blogId) {
 		Blog blog = blogRepository.findByBlogId(blogId)
-			.orElseThrow(() -> new IllegalArgumentException(NO_BLOG.get()));
+			.orElseThrow(() -> new BlogException(NO_BLOG_MESSAGE));
 		validateBlogId(blogId, blog);
 		return blog;
 	}
@@ -57,16 +58,16 @@ public class BlogService {
 
 	public void validateBlog(String title, String contents) {
 		if (title.equals("")) {
-			throw new IllegalArgumentException(NO_TITLE.get());
+			throw new BlogException(NO_TITLE_MESSAGE);
 		}
 		if (contents.equals("")) {
-			throw new IllegalArgumentException(NO_CONTENTS.get());
+			throw new BlogException(NO_CONTENTS_MESSAGE);
 		}
 	}
 
 	public void validateBlogId(Long blogId, Blog blog) {
 		if (!blog.getId().equals(blogId)) {
-			throw new IllegalArgumentException(INVALID_BLOG_ID.get());
+			throw new BlogException(INVALID_BLOG_ID_MESSAGE);
 		}
 	}
 
