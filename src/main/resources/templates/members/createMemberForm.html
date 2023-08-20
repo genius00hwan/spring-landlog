@@ -1,18 +1,48 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
 <body>
 <div class="container">
-    <form action="/members/new" method="post">
-        <div class="form-group">
-            <label for="name">이름</label>
-            <input type="text" id="name" name="name" placeholder="이름을 입력하세요.">
-            <label for="name">이메일</label>
-            <input type="text" id="email" name="email" placeholder="이메일을 입력하세요.">
-            <label for="name">비밀번호</label>
-            <input type="text" id="password" name="password" placeholder="비밀번호를 입력하세요.">
-        </div>
-        <button type="submit">등록</button>
-    </form>
+    <div class="form-group">
+        <label for="name">이름</label>
+        <input type="text" id="name" name="name" placeholder="이름을 입력하세요">
+        <label for="name">이메일</label>
+        <input type="text" id="email" name="email" placeholder="이메일을 입력하세요">
+        <label for="name">비밀번호</label>
+        <input type="text" id="password" name="password" placeholder="비밀번호를 입력하세요">
+    </div>
+    <button id = "join-btn" type="submit">등록</button>
 </div> <!-- /container -->
 </body>
+<script>
+    $(function () {
+        $("#join-btn").on("click", () => {
+            const name = $("#name").val();
+            const email = $("#email").val();
+            const password = $("#password").val();
+
+            axios({
+                method: 'post',
+                url: `/v1/api/members`,
+                headers: {
+                    "Content-Type": `application/json`,
+                },
+                data: {
+                    name: name,
+                    email: email,
+                    password: password
+                }
+            }).then(() => {
+                window.location.href = `/`;
+            }).catch(error => {
+                console.log(error);
+                window.location.href = `/`;
+
+            })
+        })
+    });
+</script>
 </html>
