@@ -1,6 +1,10 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
 <div class="container">
     <div>
         <table>
@@ -20,6 +24,33 @@
             </tbody>
         </table>
     </div>
-</div> <!-- /container -->
+</div>
 </body>
+<script>
+    $(function () {
+        axios({
+            method: 'get',
+            url: `/v1/api/members`,
+            headers: {
+                "Content-Type": `application/json`,
+            },
+        }).then(res => {
+            const membersContainer = $("#members")
+            const members = res.data;
+            for (const member of members) {
+                membersContainer.append(
+                    `<tr id="member-${member.id}">
+                         <td>${member.id}</td>
+                         <td>${member.name}</td>
+                         <td>${member.email}</td>
+
+                    </tr>`)
+            }
+        }).catch(error => {
+            console.log(error);
+            window.location.href = `/`;
+
+        })
+    });
+</script>
 </html>

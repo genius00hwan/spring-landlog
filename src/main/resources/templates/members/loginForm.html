@@ -15,4 +15,31 @@
     </form>
 </div> <!-- /container -->
 </body>
+<script>
+    $(function () {
+        $("#login-btn").on("click", () => {
+            const email = $("#email").val();
+            const password = $("#password").val();
+
+            axios({
+                method: 'post',
+                url: `/v1/api/members/login`,
+                headers: {
+                    "Content-Type": `application/json`,
+                },
+                data: {
+                    email: email,
+                    password: password
+                }
+            }).then(res => {
+                const creatorId = res.data;
+                window.location.href = `/blogs?creatorId=${creatorId}`;
+            }).catch(error => {
+                console.log(error);
+                window.location.href = `/`;
+            })
+        })
+    });
+
+</script>
 </html>
