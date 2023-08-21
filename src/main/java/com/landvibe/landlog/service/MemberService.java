@@ -29,32 +29,32 @@ public class MemberService {
 	}
 
 	void validateInvalidMember(Member member) {
-		validateNoInput(member.getName(), member.getPassword());
+		validateNoInput(member.getName(), member.getPassword(), member.getEmail());
 		validateInvalidEmail(member.getEmail());
 	}
 
-	private void validateNoInput(String name, String password) {
+	private void validateNoInput(String name, String password, String email) {
 		if (name.equals("")) {
 			throw new MemberException(NO_NAME_MESSAGE);
 		}
 		if (password.equals("")) {
 			throw new MemberException(NO_PASSWORD_MESSAGE);
 		}
+		if (email.equals("")) {
+			throw new MemberException(NO_EMAIL_MESSAGE);
+		}
+
 	}
 
 	private void validateInvalidEmail(String email) {
 		Optional.ofNullable(email)
-			.ifPresentOrElse(
+			.ifPresent(
 				e -> {
 					Matcher matcher = EMAIL_PATTERN.matcher(e);
 					if (!matcher.matches()) {
 						throw new MemberException(INVALID_EMAIL_MESSAGE);
 						// 이메일 형식이 아닐 때
 					}
-				},
-				() -> {
-					throw new MemberException(NO_EMAIL_MESSAGE);
-					// 아무것도 입력하지 않은 경우
 				}
 			);
 
