@@ -1,18 +1,19 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
 <body>
 <div class="container">
-    <form action="/members/login" method="post">
-        <div class="form-group">
-            <label for="email">이메일</label>
-            <input type="text" id="email" name="email" placeholder="이메일을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label for="password">비밀번호</label>
-            <input type="text" id="password" name="password" placeholder="비밀번호를 입력하세요">
-        </div>
-        <button type="submit">로그인</button>
-    </form>
+    <div class="form-group">
+        <label for="email">이메일</label>
+        <input type="text" id="email" name="email" placeholder="이메일을 입력하세요">
+
+        <label for="password">비밀번호</label>
+        <input type="text" id="password" name="password" placeholder="비밀번호를 입력하세요">
+    </div>
+    <button id="login-btn">로그인</button>
 </div> <!-- /container -->
 </body>
 <script>
@@ -20,7 +21,6 @@
         $("#login-btn").on("click", () => {
             const email = $("#email").val();
             const password = $("#password").val();
-
             axios({
                 method: 'post',
                 url: `/v1/api/members/login`,
@@ -40,6 +40,5 @@
             })
         })
     });
-
 </script>
 </html>
