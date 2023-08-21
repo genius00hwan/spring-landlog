@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
+@Setter
 public class LoginForm {
-	private final String email;
-	private final String password;
+	private String email;
+	private String password;
 
 	public LoginForm(String email, String password) {
 		this.email = email;
