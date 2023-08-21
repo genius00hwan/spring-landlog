@@ -12,13 +12,13 @@ public class LandlogControllerAdvice {
 
 	@ExceptionHandler({MemberException.class})
 	public ResponseEntity<ErrorMessages> handle(MemberException e) {
-		log.error(e.errorMessages.getErrorMessage());
-		return new ResponseEntity<>(e.errorMessages.getHttpStatus());
+		log.error(e.toString());
+		return new ResponseEntity<>(e.errorMessage.getHttpStatus());
 	}
 
 	@ExceptionHandler(BlogException.class)
 	public ResponseEntity<ErrorMessages> handle(BlogException e) {
-		log.error(e.errorMessage.getErrorMessage());
+		log.error(e.toString());
 		return new ResponseEntity<>(e.errorMessage.getHttpStatus());
 	}
 }
