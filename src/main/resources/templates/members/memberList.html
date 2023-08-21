@@ -15,12 +15,7 @@
                 <th>이메일</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="member : ${members}">
-                <td th:text="${member.id}"></td>
-                <td th:text="${member.name}"></td>
-                <td th:text="${member.email}"></td>
-            </tr>
+            <tbody id="members">
             </tbody>
         </table>
     </div>
@@ -35,10 +30,10 @@
                 "Content-Type": `application/json`,
             },
         }).then(res => {
-            const membersContainer = $("#members")
+            const memberContainer = $("#members")
             const members = res.data;
             for (const member of members) {
-                membersContainer.append(
+                memberContainer.append(
                     `<tr id="member-${member.id}">
                          <td>${member.id}</td>
                          <td>${member.name}</td>
