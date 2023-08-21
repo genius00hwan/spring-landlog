@@ -33,9 +33,7 @@ public class MemberController {
 	}
 
 	@GetMapping
-	public String list(Model model) {
-		List<Member> members = memberService.findMembers();
-		model.addAttribute("members", members);
+	public String list() {
 		return "members/memberList";
 	}
 
@@ -45,9 +43,7 @@ public class MemberController {
 	}
 
 	@PostMapping(value = "/login")
-	public String logIn(LoginForm logInForm, RedirectAttributes redirectAttributes) {
-		Long memberId = memberService.logIn(logInForm.getEmail(), logInForm.getPassword());
-		redirectAttributes.addAttribute("creatorId", memberId);
+	public String logIn() {
 		return "redirect:/blogs";
 	}
 }
