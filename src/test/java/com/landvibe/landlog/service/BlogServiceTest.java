@@ -2,6 +2,7 @@ package com.landvibe.landlog.service;
 
 import com.landvibe.landlog.domain.Blog;
 import com.landvibe.landlog.domain.Member;
+import com.landvibe.landlog.exception.BlogException;
 import com.landvibe.landlog.repository.MemoryBlogRepository;
 
 import org.junit.jupiter.api.AfterEach;
@@ -84,8 +85,8 @@ public class BlogServiceTest {
 			.contents(contents)
 			.build();
 
-		Exception e = assertThrows(Exception.class,
-			() -> blogService.create(creatorId, invalidBlog));
+		Exception e = assertThrows(BlogException.class,
+			() -> blogService.create(creatorId,invalidBlog));
 		assertEquals(NO_TITLE_MESSAGE.getErrorMessage(), e.getMessage());
 	}
 
@@ -128,7 +129,7 @@ public class BlogServiceTest {
 			.contents(updatedContents)
 			.build();
 
-		Exception e = assertThrows(Exception.class,
+		Exception e = assertThrows(BlogException.class,
 			() -> blogService.update(creatorId, blogId, invalidUpdateBlog));
 		assertEquals(e.getMessage(), NO_TITLE_MESSAGE.getErrorMessage());
 	}
@@ -143,7 +144,7 @@ public class BlogServiceTest {
 			.contents(invalidContents)
 			.build();
 
-		Exception e = assertThrows(Exception.class,
+		Exception e = assertThrows(BlogException.class,
 			() -> blogService.update(creatorId, blogId, invalidUpdateBlog));
 		assertEquals(e.getMessage(), NO_CONTENTS_MESSAGE.getErrorMessage());
 	}
@@ -164,7 +165,7 @@ public class BlogServiceTest {
 	public void delete_fail() {
 		blogService.create(creatorId, blog);
 
-		Exception e = assertThrows(Exception.class,
+		Exception e = assertThrows(BlogException.class,
 			() -> blogService.delete(creatorId, 0L));
 		assertEquals(e.getMessage(), NO_BLOG_MESSAGE.getErrorMessage());
 

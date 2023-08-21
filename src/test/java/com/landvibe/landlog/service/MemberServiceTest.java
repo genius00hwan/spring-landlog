@@ -1,6 +1,7 @@
 package com.landvibe.landlog.service;
 
 import com.landvibe.landlog.domain.Member;
+import com.landvibe.landlog.exception.MemberException;
 import com.landvibe.landlog.repository.MemoryMemberRepository;
 
 import org.junit.jupiter.api.AfterEach;
@@ -57,7 +58,7 @@ class MemberServiceTest {
 			.email(notEmail)
 			.password(password)
 			.build();        //when
-		Exception e = assertThrows(Exception.class,
+		Exception e = assertThrows(MemberException.class,
 			() -> memberService.join(invalidMember));
 		assertThat(e.getMessage()).isEqualTo(INVALID_EMAIL_MESSAGE.getErrorMessage());
 	}
@@ -70,7 +71,7 @@ class MemberServiceTest {
 			.password(password)
 			.build();
 		//when
-		Exception e = assertThrows(Exception.class,
+		Exception e = assertThrows(MemberException.class,
 			() -> memberService.join(invalidMember));
 		assertThat(e.getMessage()).isEqualTo(NO_NAME_MESSAGE.getErrorMessage());
 	}
@@ -83,7 +84,7 @@ class MemberServiceTest {
 			.password(empty)
 			.build();
 		//when
-		Exception e = assertThrows(Exception.class,
+		Exception e = assertThrows(MemberException.class,
 			() -> memberService.join(invalidMember));
 		assertThat(e.getMessage()).isEqualTo(NO_PASSWORD_MESSAGE.getErrorMessage());
 	}
@@ -97,8 +98,8 @@ class MemberServiceTest {
 			.password(password)
 			.build();
 		memberService.join(member);
-		IllegalStateException e = assertThrows(IllegalStateException.class,
-			() -> memberService.join(invalidMember));//예외가 발생해야 한다.
+		Exception e = assertThrows(MemberException.class,
+			() -> memberService.join(invalidMember));
 		assertThat(e.getMessage()).isEqualTo(DUPLICATE_EMAIL_MESSAGE.getErrorMessage());
 	}
 
@@ -118,7 +119,7 @@ class MemberServiceTest {
 		//when
 		memberService.join(member);
 		//then
-		Exception e = assertThrows(Exception.class,
+		Exception e = assertThrows(MemberException.class,
 			() -> memberService.logIn(invalidEmail, password));
 		assertThat(e.getMessage()).isEqualTo(NO_MEMBER_MESSAGE.getErrorMessage());
 	}
@@ -128,7 +129,7 @@ class MemberServiceTest {
 		//when
 		memberService.join(member);
 		//then
-		Exception e = assertThrows(Exception.class,
+		Exception e = assertThrows(MemberException.class,
 			() -> memberService.logIn(email, invalidPassword));
 		assertThat(e.getMessage()).isEqualTo(INVALID_PASSWORD_MESSAGE.getErrorMessage());
 	}
